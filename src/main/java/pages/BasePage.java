@@ -20,6 +20,16 @@ public abstract class BasePage {
         wait.until(ExpectedConditions.visibilityOfElementLocated(elementBy));
     }
 
+    protected void waitForInvisibility(By elementBy) {
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(elementBy));
+    }
+
+    protected void waitForNotEmptyText(By elementBy) {
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(20));
+        wait.until(driver -> !driver.findElement(elementBy).getText().trim().isEmpty());
+    }
+
     protected boolean isVisible(By elementBy) {
         try {
             waitForVisibility(elementBy);
