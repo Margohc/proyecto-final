@@ -3,13 +3,14 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-public class AddEmployeePage extends BasePage {
+public class AddEmployeePage extends MenuPage {
 
     private By addEmployeeTitle = By.xpath("//h6[text()='Add Employee']");
     private By formLoader = By.className("oxd-form-loader");
     private By firstNameInput = By.name("firstName");
     private By middleNameInput = By.name("middleName");
     private By lastNameInput = By.name("lastName");
+    private By employeeIdInput = By.xpath("//label[text()='Employee Id']/../following-sibling::div/input");
     private By saveButton = By.xpath("//button[@type='submit']");
     private By successMessage = By.xpath("//div[contains(@class,'oxd-toast')]//p[text()='Successfully Saved']");
     private By firstNameRequiredMessage = By.xpath("//input[@name='firstName']/ancestor::div[contains(@class,'oxd-input-group')][1]//span[contains(@class,'oxd-input-field-error-message')]");
@@ -36,6 +37,10 @@ public class AddEmployeePage extends BasePage {
 
     public void setLastName(String lastName) {
         webDriver.findElement(lastNameInput).sendKeys(lastName);
+    }
+
+    public String getEmployeeId() {
+        return webDriver.findElement(employeeIdInput).getAttribute("value");
     }
 
     public void clickSaveButton() {

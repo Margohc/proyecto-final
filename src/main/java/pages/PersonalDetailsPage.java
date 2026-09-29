@@ -3,7 +3,7 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-public class PersonalDetailsPage extends BasePage {
+public class PersonalDetailsPage extends MenuPage {
 
     private By personalDetailsTitle = By.xpath("//h6[text()='Personal Details']");
     private By employeeFullName = By.cssSelector(".orangehrm-edit-employee-name h6");

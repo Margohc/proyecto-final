@@ -10,4 +10,9 @@
             <class name="employee.AddEmployeeTests"/>
         </classes>
     </test>
+    <test name="Search Employee Tests">
+        <classes>
+            <class name="employee.SearchEmployeeTests"/>
+        </classes>
+    </test>
 </suite>
