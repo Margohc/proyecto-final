@@ -39,7 +39,7 @@ public class EmployeeListPage extends MenuPage {
 
     public void clickSearchButton() {
         webDriver.findElement(searchButton).click();
-        waitForInvisibility(tableLoader);
+        waitForLoaderToFinish(tableLoader);
     }
 
     public void searchByEmployeeName(String employeeName) {

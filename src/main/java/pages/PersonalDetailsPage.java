@@ -10,6 +10,8 @@ public class PersonalDetailsPage extends MenuPage {
 
     public PersonalDetailsPage(WebDriver webDriver) {
         super(webDriver);
+
+        waitForVisibility(personalDetailsTitle);
     }
 
     public boolean isPersonalDetailsDisplayed() {
