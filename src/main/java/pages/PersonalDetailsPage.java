@@ -11,7 +11,8 @@ public class PersonalDetailsPage extends MenuPage {
     public PersonalDetailsPage(WebDriver webDriver) {
         super(webDriver);
 
-        waitForVisibility(personalDetailsTitle);
+        // La URL cambia apenas se guarda el empleado; el titulo tarda mas en cargar
+        waitForUrlToContain("/pim/viewPersonalDetails/");
     }
 
     public boolean isPersonalDetailsDisplayed() {

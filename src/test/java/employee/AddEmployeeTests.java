@@ -21,10 +21,13 @@ public class AddEmployeeTests extends BaseTest {
         AddEmployeePage addEmployeePage = openAddEmployeePage();
         String lastName = "Perez" + System.currentTimeMillis();
 
-        PersonalDetailsPage personalDetailsPage = addEmployeePage.saveEmployee("Juan", "Carlos", lastName);
+        addEmployeePage.fillEmployeeName("Juan", "Carlos", lastName);
+        addEmployeePage.clickSaveButton();
 
+        // El mensaje desaparece al redirigir a Personal Details, por eso se valida antes
         Assert.assertTrue(addEmployeePage.isSuccessMessageDisplayed(),
                 "Al guardar el empleado deberia mostrarse el mensaje Successfully Saved");
+        PersonalDetailsPage personalDetailsPage = addEmployeePage.goToPersonalDetails();
         Assert.assertTrue(personalDetailsPage.isPersonalDetailsDisplayed(),
                 "Despues de guardar deberia mostrarse la pagina Personal Details");
         Assert.assertEquals(personalDetailsPage.getEmployeeFullNameText(), "Juan " + lastName);

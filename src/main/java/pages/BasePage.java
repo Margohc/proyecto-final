@@ -25,6 +25,11 @@ public abstract class BasePage {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(elementBy));
     }
 
+    protected void waitForUrlToContain(String urlPart) {
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.urlContains(urlPart));
+    }
+
     protected void waitForLoaderToFinish(By loaderBy) {
         try {
             WebDriverWait shortWait = new WebDriverWait(webDriver, Duration.ofSeconds(3));
