@@ -10,23 +10,26 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import report.ReportManager;
 
 public abstract class BaseTest {
 
     protected WebDriver webDriver;
 
-    private String baseUrl = System.getProperty("baseUrl", "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
-    private String browser = System.getProperty("browser", "chrome");
+    private final String baseUrl = System.getProperty("baseUrl", "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
 
     @BeforeSuite
     public static void setUpSuite() {
         ReportManager.init("target/reports/OrangeHRM.html", "OrangeHRM");
     }
 
+    @Parameters("browser")
     @BeforeMethod
-    public void setUp(ITestResult iTestResult) throws Exception {
-        ReportManager.getInstance().startTest(iTestResult.getMethod().getMethodName());
+    public void setUp(@Optional("chrome") String browser,ITestResult iTestResult) {
+        String testName = iTestResult.getMethod().getMethodName() + " ["+ browser.toUpperCase() + "]";
+        ReportManager.getInstance().startTest(testName);
 
         switch (browser.toLowerCase()) {
             case "chrome":
@@ -36,7 +39,7 @@ public abstract class BaseTest {
                 webDriver = new FirefoxDriver();
                 break;
             default:
-                throw new Exception(browser + " no soportado");
+                throw new IllegalArgumentException(browser + " no soportado");
         }
 
         webDriver.manage().window().maximize();

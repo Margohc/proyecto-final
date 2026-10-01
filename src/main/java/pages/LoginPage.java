@@ -9,8 +9,8 @@ public class LoginPage extends BasePage {
     private By passwordInput = By.name("password");
     private By loginButton = By.className("orangehrm-login-button");
     private By loginErrorMessage = By.cssSelector("[role='alert'] p");
-    private By usernameRequiredMessage = By.xpath("//input[@name='username']/ancestor::div[contains(@class,'oxd-input-group')][1]//span[contains(@class,'oxd-input-field-error-message')]");
-    private By passwordRequiredMessage = By.xpath("//input[@name='password']/ancestor::div[contains(@class,'oxd-input-group')][1]//span[contains(@class,'oxd-input-field-error-message')]");
+    private By usernameRequiredMessage = By.xpath("//span[text()='Required']");
+    private By passwordRequiredMessage = By.xpath("//span[text()='Required']");
 
     public LoginPage(WebDriver webDriver) {
         super(webDriver);

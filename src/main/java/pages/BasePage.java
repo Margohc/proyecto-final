@@ -2,6 +2,7 @@ package pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -28,6 +29,11 @@ public abstract class BasePage {
     protected void waitForNotEmptyText(By elementBy) {
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(20));
         wait.until(driver -> !driver.findElement(elementBy).getText().trim().isEmpty());
+    }
+
+    protected void waitForStaleness(WebElement element) {
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.stalenessOf(element));
     }
 
     protected boolean isVisible(By elementBy) {

@@ -19,9 +19,20 @@ https://opensource-demo.orangehrmlive.com
 - ExtentReports
 - IntelliJ IDEA
 - Chrome
+- Firefox
 
 ## Estructura del proyecto
 
+
+## Datos de prueba
+
+Los datos base de los empleados se encuentran en :
+
+```text
+src/test/resources/employee-data.csv
+```
+
+Un `DataProvider` lee el firstName, middleName y lastName desde ese archivo. Las pruebas de alta y busqueda se ejecutan con los dos empleados configurados. Para evitar empleados duplicados entre corridas y navegadores, al lastName base se le agrega la marca de tiempo actual durante la ejecucion.
 
 ## Casos de prueba incluidos
 
@@ -59,7 +70,7 @@ Required
 
 Casos cubiertos:
 
-- username vacío
+- Username vacío
 - password vacío
 - username y password vacíos
 - username con espacios
@@ -145,6 +156,8 @@ Desde Maven:
 mvn test
 ```
 
+Este comando ejecutara la suite completa en secuencia en Chrome y Firefox.
+
 También se puede ejecutar usando el `testng.xml`:
 
 ```bash
@@ -161,5 +174,7 @@ En IntelliJ IDEA configurar:
 Project SDK: openjdk-11
 Language level: 11
 ```
+
+Chrome y Firefox deben estar instalados en el equipo.
 
 \

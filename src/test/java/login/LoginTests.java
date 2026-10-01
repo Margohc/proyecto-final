@@ -26,7 +26,7 @@ public class LoginTests extends BaseTest {
         loginPage.submitLogin("usuarioInvalido", "passwordInvalido");
 
         Assert.assertTrue(loginPage.isErrorMessageDisplayed(),
-                "El login con credenciales invalidas deberia mostrar un mensaje de error");
+                "el login con credenciales invalidas deberia mostrar un mensaje de error");
         Assert.assertEquals(loginPage.getErrorMessageText(), "Invalid credentials");
     }
 
@@ -104,9 +104,8 @@ public class LoginTests extends BaseTest {
         LoginPage loginPage = new LoginPage(webDriver);
 
         loginPage.submitLogin("Admin", "   ");
-
         Assert.assertTrue(loginPage.isPasswordRequiredMessageDisplayed(),
-                "El login con password compuesto por espacios deberia mostrar Required en password");
+                "El login con password compuesto por espacios deberia mostrar Required en el password ");
         Assert.assertEquals(loginPage.getPasswordRequiredMessageText(), "Required");
     }
 }
