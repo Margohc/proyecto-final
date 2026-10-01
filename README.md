@@ -1,14 +1,23 @@
 # Proyecto final
 
-Proyecto de automatización web para la página OrangeHRM Demo, desarrollado con Java, Maven, Selenium WebDriver y TestNG.
+Proyecto de automatización web para la página OrangeHRM Demo, desarrollado con Java, Maven, Selenium WebDriver y TestNG, aplicando el patrón Page Object Model.
 
-## Objetivo
+Página utilizada: https://opensource-demo.orangehrmlive.com
 
-Automatizar pruebas del flujo de login, agregar empleado nuevo, buscar empleado y verificar que aparece en la grilla aplicando el patrón Page Object Model.
+## Caso de negocio automatizado
 
-Página utilizada:
+Una sola prueba (`CreateAndSearchEmployeeTest`) recorre el flujo completo:
 
-https://opensource-demo.orangehrmlive.com
+1. Iniciar sesión como administrador.
+2. Ir al módulo **PIM** desde el menú.
+3. Crear un empleado nuevo con:
+   - nombre, segundo nombre y apellido
+   - ID de empleado
+   - datos de usuario (switch **Create Login Details**): usuario, contraseña, confirmación y estado
+4. Buscar al empleado por nombre en el listado de empleados.
+5. Verificar que aparece en la grilla con su ID, nombre y apellido.
+
+La prueba se ejecuta con **dos empleados** (DataProvider) en **dos navegadores** (Chrome y Edge).
 
 ## Tecnologías
 
@@ -17,149 +26,86 @@ https://opensource-demo.orangehrmlive.com
 - Selenium WebDriver
 - TestNG
 - ExtentReports
-- IntelliJ IDEA
-- Chrome
+- Gson (lectura del archivo de datos)
 
 ## Estructura del proyecto
 
-
-## Casos de prueba incluidos
-
-### Login exitoso
-
-Valida que un usuario con credenciales correctas pueda ingresar al sistema y visualizar el Dashboard.
-
-Credenciales:
-
 ```text
-Admin / admin123
+src/main/java
+├── helper/ScreenShotHelper.java     captura de pantalla para el reporte
+├── model/
+│   ├── Employee.java                datos de un empleado
+│   └── EmployeeRow.java             una fila de la grilla de resultados
+├── pages/                           Page Objects (locators + acciones)
+│   ├── BasePage.java                esperas comunes
+│   ├── MenuPage.java                menú lateral (PIM)
+│   ├── LoginPage.java
+│   ├── DashboardPage.java
+│   ├── EmployeeListPage.java        búsqueda y lectura de la grilla
+│   ├── AddEmployeePage.java         formulario de alta + datos de usuario
+│   └── PersonalDetailsPage.java
+└── report/ReportManager.java        ExtentReports
+
+src/test/java
+├── base/BaseTest.java               abre/cierra el navegador según el parámetro de la suite
+├── data/EmployeeDataProvider.java   lee employees.json y genera los datos únicos
+├── employee/CreateAndSearchEmployeeTest.java   caso de negocio
+├── employee/AddEmployeeTests.java, SearchEmployeeTests.java   pruebas extra (regresión)
+└── login/LoginTests.java                                      pruebas extra (regresión)
+
+src/test/resources
+├── employees.json                   datos de los empleados
+├── testng.xml                       suite del caso de negocio (Chrome + Edge)
+└── regression.xml                   suite con las pruebas extra
 ```
 
-### Credenciales inválidas
+### Reglas del Page Object Model
 
-Valida que se muestre el mensaje:
+- La prueba no tiene locators ni búsquedas de elementos: se lee como el caso de negocio.
+- Los locators son campos `private By` dentro de cada página, separados de las acciones.
+- Las aserciones están en la prueba, nunca en las páginas.
 
-```text
-Invalid credentials
-```
+## Datos de prueba
 
-Casos cubiertos:
+Los empleados se cargan desde `src/test/resources/employees.json`.
 
-- usuario inválido y password inválido
-- usuario inválido y password válido
-- usuario válido y password inválido
+| Viene del archivo | Se genera al ejecutar |
+|---|---|
+| Nombre, segundo nombre | — |
+| Apellido base (ej. `Perez`) | Sufijo aleatorio de letras → `PerezKqzmta` |
+| Usuario base (ej. `jperez`) | Mismo sufijo en minúsculas → `jperezkqzmta` |
+| Contraseña y estado (Enabled/Disabled) | — |
+| — | ID de empleado (8 dígitos del timestamp + índice, máx. 10 caracteres) |
 
-### Campos requeridos
-
-Valida que se muestre el mensaje:
-
-```text
-Required
-```
-
-Casos cubiertos:
-
-- username vacío
-- password vacío
-- username y password vacíos
-- username con espacios
-- password con espacios
-
-## Page Objects
-
-### BasePage
-
-Contiene métodos comunes para las páginas:
-
-- esperar visibilidad
-- validar si un elemento está visible
-- obtener texto de un elemento
-
-### LoginPage
-
-Representa la página de login.
-
-Incluye acciones como:
-
-- escribir username
-- escribir password
-- hacer clic en Login
-- enviar formulario vacío
-- validar mensajes de error
-
-### DashboardPage
-
-Representa la página principal después de un login exitoso.
-
-Valida que el título:
-
-```text
-Dashboard
-```
-
-esté visible.
-
-## Reportes
-
-El proyecto genera un reporte HTML con ExtentReports en:
-
-```text
-target/reports/OrangeHRM.html
-```
-
-Si una prueba falla, se adjunta una captura de pantalla al reporte.
-
-### Cómo ver el reporte
-
-Primero se deben ejecutar las pruebas. Luego abrir el archivo:
-
-```text
-target/reports/OrangeHRM.html
-```
-
-Desde IntelliJ IDEA:
-
-1. Abrir la carpeta `target`.
-2. Abrir la carpeta `reports`.
-3. Hacer clic derecho sobre `OrangeHRM.html`.
-4. Seleccionar `Open in Browser`.
-
-Desde Finder:
-
-1. Ir a la carpeta del proyecto.
-2. Abrir `target/reports`.
-3. Abrir el archivo `OrangeHRM.html` con el navegador.
+Así el nombre, el usuario y el ID son únicos en cada corrida, y la búsqueda devuelve un solo resultado.
 
 ## Cómo ejecutar las pruebas
 
-Desde IntelliJ IDEA:
+Se necesita Java 11+, Maven, Google Chrome y Microsoft Edge.
 
-1. Abrir el proyecto.
-2. Verificar que el SDK sea Java 11.
-3. Abrir `LoginTests.java`.
-4. Ejecutar la clase completa o un test individual.
-
-Desde Maven:
+Suite del caso de negocio (Chrome + Edge):
 
 ```bash
 mvn test
 ```
 
-También se puede ejecutar usando el `testng.xml`:
+Suite con las pruebas extra de login, alta y búsqueda:
 
 ```bash
-mvn test -DsuiteXmlFile=src/test/resources/testng.xml
+mvn test -DsuiteXmlFile=src/test/resources/regression.xml
 ```
 
-## Configuración importante
+Para cambiar los navegadores, editar el parámetro `browser` en `testng.xml`. Valores soportados: `chrome`, `edge`, `firefox`, `safari`. En Safari primero hay que activar *Develop → Allow Remote Automation*.
 
-El proyecto debe ejecutarse con Java 11.
+## Reportes
 
-En IntelliJ IDEA configurar:
+Después de ejecutar las pruebas se genera un reporte HTML con ExtentReports en:
 
 ```text
-Project SDK: openjdk-11
-Language level: 11
+reports/OrangeHRM.html              suite del caso de negocio
+reports/OrangeHRM-regression.html   suite de regresión
 ```
 
-\
+Cada ejecución aparece con el navegador y el empleado usado, por ejemplo `testCreatedEmployeeAppearsInEmployeeList [edge] [Maria Elena GomezDsvtgy]`. Si una prueba falla, se adjunta una captura de pantalla.
+
+Para verlo, abrir el archivo `.html` con cualquier navegador.

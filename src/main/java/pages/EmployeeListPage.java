@@ -1,7 +1,12 @@
 package pages;
 
+import model.EmployeeRow;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmployeeListPage extends MenuPage {
 
@@ -11,6 +16,8 @@ public class EmployeeListPage extends MenuPage {
     private By employeeIdInput = By.xpath("//label[text()='Employee Id']/../following-sibling::div/input");
     private By searchButton = By.xpath("//button[@type='submit']");
     private By tableLoader = By.className("oxd-table-loader");
+    private By resultRows = By.cssSelector(".oxd-table-body .oxd-table-card");
+    private By rowCells = By.cssSelector("[role='cell']");
     private By recordsFoundText = By.xpath("//span[contains(normalize-space(.),'Record')]");
 
     public EmployeeListPage(WebDriver webDriver) {
@@ -39,7 +46,7 @@ public class EmployeeListPage extends MenuPage {
 
     public void clickSearchButton() {
         webDriver.findElement(searchButton).click();
-        waitForInvisibility(tableLoader);
+        waitForLoaderToFinish(tableLoader);
     }
 
     public void searchByEmployeeName(String employeeName) {
@@ -54,5 +61,17 @@ public class EmployeeListPage extends MenuPage {
 
     public String getRecordsFoundText() {
         return getText(recordsFoundText);
+    }
+
+    public List<EmployeeRow> getResultRows() {
+        List<EmployeeRow> rows = new ArrayList<>();
+        for (WebElement row : webDriver.findElements(resultRows)) {
+            List<WebElement> cells = row.findElements(rowCells);
+            // Columnas: [0] checkbox, [1] Id, [2] First (& Middle) Name, [3] Last Name
+            rows.add(new EmployeeRow(cells.get(1).getText().trim(),
+                    cells.get(2).getText().trim(),
+                    cells.get(3).getText().trim()));
+        }
+        return rows;
     }
 }

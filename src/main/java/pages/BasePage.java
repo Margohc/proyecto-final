@@ -25,6 +25,21 @@ public abstract class BasePage {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(elementBy));
     }
 
+    protected void waitForUrlToContain(String urlPart) {
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.urlContains(urlPart));
+    }
+
+    protected void waitForLoaderToFinish(By loaderBy) {
+        try {
+            WebDriverWait shortWait = new WebDriverWait(webDriver, Duration.ofSeconds(3));
+            shortWait.until(ExpectedConditions.visibilityOfElementLocated(loaderBy));
+        } catch (Exception e) {
+            // El loader pudo aparecer y desaparecer antes de verlo
+        }
+        waitForInvisibility(loaderBy);
+    }
+
     protected void waitForNotEmptyText(By elementBy) {
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(20));
         wait.until(driver -> !driver.findElement(elementBy).getText().trim().isEmpty());

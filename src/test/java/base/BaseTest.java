@@ -4,29 +4,49 @@ import com.aventstack.extentreports.Status;
 import helper.ScreenShotHelper;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.safari.SafariDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import report.ReportManager;
+
+import java.util.Arrays;
 
 public abstract class BaseTest {
 
     protected WebDriver webDriver;
 
     private String baseUrl = System.getProperty("baseUrl", "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
-    private String browser = System.getProperty("browser", "chrome");
+    private String browser;
 
+    // El nombre del reporte se puede cambiar por suite con <parameter name="reportName" .../>
     @BeforeSuite
-    public static void setUpSuite() {
-        ReportManager.init("target/reports/OrangeHRM.html", "OrangeHRM");
+    @Parameters("reportName")
+    public static void setUpSuite(@Optional("OrangeHRM") String reportName) {
+        ReportManager.init("reports/" + reportName + ".html", "OrangeHRM");
+    }
+
+    // El navegador llega como parametro desde el testng.xml; si no hay, se usa -Dbrowser o chrome
+    @BeforeClass
+    @Parameters("browser")
+    public void setUpBrowser(@Optional("") String browser) {
+        this.browser = browser.isEmpty() ? System.getProperty("browser", "chrome") : browser;
     }
 
     @BeforeMethod
     public void setUp(ITestResult iTestResult) throws Exception {
-        ReportManager.getInstance().startTest(iTestResult.getMethod().getMethodName());
+        String testName = iTestResult.getMethod().getMethodName() + " [" + browser + "]";
+        if (iTestResult.getParameters().length > 0) {
+            testName += " " + Arrays.toString(iTestResult.getParameters());
+        }
+        ReportManager.getInstance().startTest(testName).assignCategory(browser);
 
         switch (browser.toLowerCase()) {
             case "chrome":
@@ -34,6 +54,12 @@ public abstract class BaseTest {
                 break;
             case "firefox":
                 webDriver = new FirefoxDriver();
+                break;
+            case "edge":
+                webDriver = new EdgeDriver();
+                break;
+            case "safari":
+                webDriver = new SafariDriver();
                 break;
             default:
                 throw new Exception(browser + " no soportado");

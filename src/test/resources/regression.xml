@@ -1,0 +1,19 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="OrangeHRM - Regresion">
+    <parameter name="reportName" value="OrangeHRM-regression"/>
+    <test name="Login Tests">
+        <classes>
+            <class name="login.LoginTests"/>
+        </classes>
+    </test>
+    <test name="Add Employee Tests">
+        <classes>
+            <class name="employee.AddEmployeeTests"/>
+        </classes>
+    </test>
+    <test name="Search Employee Tests">
+        <classes>
+            <class name="employee.SearchEmployeeTests"/>
+        </classes>
+    </test>
+</suite>
